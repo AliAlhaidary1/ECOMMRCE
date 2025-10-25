@@ -371,35 +371,7 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Categories Filter */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">تصفح الفئات</h2>
-          <div className="flex flex-wrap justify-center gap-3">
-            <button
-              onClick={() => setSelectedCategory('')}
-              className={`px-6 py-3 rounded-full text-sm font-semibold transition-all duration-300 transform hover:scale-105 ${
-                selectedCategory === '' 
-                  ? 'bg-gradient-primary text-white shadow-lg' 
-                  : 'bg-white text-gray-700 hover:bg-primary-50 hover:text-primary-600 shadow-soft'
-              }`}
-            >
-              جميع المنتجات
-            </button>
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-6 py-3 rounded-full text-sm font-semibold transition-all duration-300 transform hover:scale-105 ${
-                  selectedCategory === category 
-                    ? 'bg-gradient-primary text-white shadow-lg' 
-                    : 'bg-white text-gray-700 hover:bg-primary-50 hover:text-primary-600 shadow-soft'
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        </div>
+
 
         {/* Products Grid */}
         <div className="grid-products">

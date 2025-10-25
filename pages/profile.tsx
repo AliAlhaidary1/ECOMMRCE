@@ -240,7 +240,9 @@ export default function Profile() {
                       type="button"
                       onClick={() => {
                         setIsEditing(false)
-                        reset(userProfile)
+                        if (userProfile) {
+                          reset(userProfile)
+                        }
                       }}
                       className="flex-1 btn-secondary flex items-center justify-center space-x-2 rtl:space-x-reverse"
                     >

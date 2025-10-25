@@ -32,7 +32,6 @@ export default function AdminProducts() {
   const router = useRouter()
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
-  const [showAddProduct, setShowAddProduct] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   useEffect(() => {
@@ -114,7 +113,7 @@ export default function AdminProducts() {
                 <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center">
                   <User className="w-4 h-4 text-white" />
                 </div>
-                <span>{session.user?.name}</span>
+                <span>{session?.user?.name || 'مستخدم'}</span>
               </div>
               <Link href="/admin" className="nav-link">
                 <Package className="w-6 h-6" />
@@ -155,7 +154,7 @@ export default function AdminProducts() {
                 <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center">
                   <User className="w-4 h-4 text-white" />
                 </div>
-                <span>{session.user?.name}</span>
+                <span>{session?.user?.name || 'مستخدم'}</span>
               </div>
               <Link href="/admin" className="nav-link">
                 <Package className="w-6 h-6" />
@@ -200,7 +199,7 @@ export default function AdminProducts() {
               <p className="text-lg text-gray-600">إضافة وتعديل وحذف المنتجات في المتجر</p>
             </div>
             <button
-              onClick={() => setShowAddProduct(true)}
+              onClick={() => router.push('/admin/products/add')}
               className="btn-primary flex items-center space-x-3 rtl:space-x-reverse mt-6 sm:mt-0 px-6 py-3"
             >
               <Plus className="w-5 h-5" />
@@ -222,9 +221,6 @@ export default function AdminProducts() {
                     </th>
                     <th className="px-8 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                       المخزون
-                    </th>
-                    <th className="px-8 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      الفئة
                     </th>
                     <th className="px-8 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                       الحالة
@@ -264,9 +260,6 @@ export default function AdminProducts() {
                           {product.stock}
                         </span>
                       </td>
-                      <td className="px-8 py-6 whitespace-nowrap text-base text-gray-900">
-                        {product.category}
-                      </td>
                       <td className="px-8 py-6 whitespace-nowrap">
                         <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                           product.isActive 
@@ -297,149 +290,6 @@ export default function AdminProducts() {
           </div>
         </div>
       </main>
-
-      {/* Add Product Modal */}
-      {showAddProduct && (
-        <AddProductModal
-          onClose={() => setShowAddProduct(false)}
-          onSuccess={() => {
-            setShowAddProduct(false)
-            fetchProducts()
-          }}
-        />
-      )}
-    </div>
-  )
-}
-
-// Add Product Modal Component
-function AddProductModal({ onClose, onSuccess }: { onClose: () => void, onSuccess: () => void }) {
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    price: '',
-    category: '',
-    stock: '',
-    image: ''
-  })
-  const [loading, setLoading] = useState(false)
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-
-    try {
-      const response = await fetch('/api/products', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      })
-
-      if (response.ok) {
-        toast.success('تم إضافة المنتج بنجاح')
-        onSuccess()
-      } else {
-        toast.error('حدث خطأ أثناء إضافة المنتج')
-      }
-    } catch (error) {
-      toast.error('حدث خطأ أثناء إضافة المنتج')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl max-w-md w-full p-6 shadow-xl">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">إضافة منتج جديد</h3>
-        
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">اسم المنتج</label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="input-field"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">الوصف</label>
-            <textarea
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="input-field"
-              rows={3}
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">السعر (ر.س)</label>
-            <input
-              type="number"
-              step="0.01"
-              value={formData.price}
-              onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-              className="input-field"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">الفئة</label>
-            <input
-              type="text"
-              value={formData.category}
-              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-              className="input-field"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">المخزون</label>
-            <input
-              type="number"
-              value={formData.stock}
-              onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-              className="input-field"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">رابط الصورة</label>
-            <input
-              type="url"
-              value={formData.image}
-              onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-              className="input-field"
-            />
-          </div>
-
-          <div className="flex space-x-3 rtl:space-x-reverse pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 btn-secondary"
-            >
-              إلغاء
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex-1 btn-primary disabled:opacity-50"
-            >
-              {loading ? 'جاري الإضافة...' : 'إضافة المنتج'}
-            </button>
-          </div>
-        </form>
-      </div>
     </div>
   )
 }

@@ -131,7 +131,7 @@ export default function AdminOrders() {
                 <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center">
                   <User className="w-4 h-4 text-white" />
                 </div>
-                <span>{session.user?.name}</span>
+                <span>{session?.user?.name || 'مستخدم'}</span>
               </div>
               <Link href="/admin" className="nav-link">
                 <Package className="w-6 h-6" />
@@ -172,7 +172,7 @@ export default function AdminOrders() {
                 <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center">
                   <User className="w-4 h-4 text-white" />
                 </div>
-                <span>{session.user?.name}</span>
+                <span>{session?.user?.name || 'مستخدم'}</span>
               </div>
               <Link href="/admin" className="nav-link">
                 <Package className="w-6 h-6" />
