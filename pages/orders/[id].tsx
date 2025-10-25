@@ -123,28 +123,6 @@ export default function OrderDetails() {
     }
   }
 
-  const handleConfirmOrder = async () => {
-    try {
-      const response = await fetch(`/api/orders/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ status: 'CONFIRMED' })
-      })
-
-      if (response.ok) {
-        toast.success('تم تأكيد الطلب بنجاح')
-        fetchOrder() // إعادة تحميل الطلب
-      } else {
-        toast.error('حدث خطأ في تأكيد الطلب')
-      }
-    } catch (error) {
-      console.error('Error confirming order:', error)
-      toast.error('حدث خطأ في تأكيد الطلب')
-    }
-  }
-
   const handleSignOut = () => {
     signOut({ callbackUrl: '/' })
   }
@@ -303,17 +281,6 @@ export default function OrderDetails() {
                 </div>
               </div>
 
-              {/* Action Button */}
-              {order.status === 'PENDING' && (
-                <div className="pt-4 border-t">
-                  <button
-                    onClick={handleConfirmOrder}
-                    className="btn-primary"
-                  >
-                    تأكيد الطلب
-                  </button>
-                </div>
-              )}
             </div>
 
             {/* Order Items */}
