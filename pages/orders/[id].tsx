@@ -100,6 +100,13 @@ export default function OrderDetails() {
       router.push('/auth/signin')
       return
     }
+    if (session.user?.role === 'ADMIN') {
+      // المدير يمكنه عرض تفاصيل الطلبات
+      if (id) {
+        fetchOrder()
+      }
+      return
+    }
     if (id) {
       fetchOrder()
     }
@@ -179,26 +186,36 @@ export default function OrderDetails() {
             </Link>
 
             {/* Navigation */}
-            <div className="hidden md:flex items-center space-x-4 rtl:space-x-reverse">
-              <Link href="/profile" className="flex items-center space-x-1 text-gray-700 hover:text-primary-600">
-                <User className="w-5 h-5" />
+            <div className="hidden md:flex items-center space-x-6 rtl:space-x-reverse">
+              <Link href="/profile" className="nav-link">
+                <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center">
+                  <User className="w-4 h-4 text-white" />
+                </div>
                 <span>{session.user?.name}</span>
               </Link>
-              <Link href="/cart" className="flex items-center space-x-1 text-gray-700 hover:text-primary-600">
-                <ShoppingCart className="w-5 h-5" />
-                <span>السلة</span>
-              </Link>
+              {session.user?.role !== 'ADMIN' && (
+                <>
+                  <Link href="/cart" className="nav-link">
+                    <ShoppingCart className="w-6 h-6" />
+                    <span>السلة</span>
+                  </Link>
+                  <Link href="/orders" className="nav-link-active">
+                    <Package className="w-6 h-6" />
+                    <span>طلباتي</span>
+                  </Link>
+                </>
+              )}
               {session.user?.role === 'ADMIN' && (
-                <Link href="/admin" className="flex items-center space-x-1 text-gray-700 hover:text-primary-600">
-                  <Settings className="w-5 h-5" />
+                <Link href="/admin" className="nav-link-active">
+                  <Settings className="w-6 h-6" />
                   <span>لوحة التحكم</span>
                 </Link>
               )}
               <button
                 onClick={handleSignOut}
-                className="flex items-center space-x-1 text-gray-700 hover:text-primary-600"
+                className="nav-link text-danger-600 hover:text-danger-700"
               >
-                <LogOut className="w-5 h-5" />
+                <LogOut className="w-6 h-6" />
                 <span>تسجيل الخروج</span>
               </button>
             </div>
@@ -215,27 +232,37 @@ export default function OrderDetails() {
 
         {/* Mobile menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-white border-t">
-            <div className="px-4 py-4 space-y-4">
-              <Link href="/profile" className="flex items-center space-x-2 text-gray-700 hover:text-primary-600">
-                <User className="w-5 h-5" />
+          <div className="md:hidden bg-white/95 backdrop-blur-md border-t border-gray-100 animate-slide-up">
+            <div className="container-modern py-6 space-y-4">
+              <Link href="/profile" className="nav-link">
+                <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center">
+                  <User className="w-4 h-4 text-white" />
+                </div>
                 <span>{session.user?.name}</span>
               </Link>
-              <Link href="/cart" className="flex items-center space-x-2 text-gray-700 hover:text-primary-600">
-                <ShoppingCart className="w-5 h-5" />
-                <span>السلة</span>
-              </Link>
+              {session.user?.role !== 'ADMIN' && (
+                <>
+                  <Link href="/cart" className="nav-link">
+                    <ShoppingCart className="w-6 h-6" />
+                    <span>السلة</span>
+                  </Link>
+                  <Link href="/orders" className="nav-link-active">
+                    <Package className="w-6 h-6" />
+                    <span>طلباتي</span>
+                  </Link>
+                </>
+              )}
               {session.user?.role === 'ADMIN' && (
-                <Link href="/admin" className="flex items-center space-x-2 text-gray-700 hover:text-primary-600">
-                  <Settings className="w-5 h-5" />
+                <Link href="/admin" className="nav-link-active">
+                  <Settings className="w-6 h-6" />
                   <span>لوحة التحكم</span>
                 </Link>
               )}
               <button
                 onClick={handleSignOut}
-                className="flex items-center space-x-2 text-gray-700 hover:text-primary-600"
+                className="nav-link text-danger-600 hover:text-danger-700"
               >
-                <LogOut className="w-5 h-5" />
+                <LogOut className="w-6 h-6" />
                 <span>تسجيل الخروج</span>
               </button>
             </div>

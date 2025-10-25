@@ -86,6 +86,10 @@ export default function Orders() {
       router.push('/auth/signin')
       return
     }
+    if (session.user?.role === 'ADMIN') {
+      router.push('/admin')
+      return
+    }
     fetchOrders()
   }, [session, status])
 
@@ -160,16 +164,20 @@ export default function Orders() {
                 </div>
                 <span>{session.user?.name}</span>
               </Link>
-              <Link href="/cart" className="nav-link">
-                <ShoppingCart className="w-6 h-6" />
-                <span>السلة</span>
-              </Link>
-              <Link href="/orders" className="nav-link-active">
-                <Package className="w-6 h-6" />
-                <span>طلباتي</span>
-              </Link>
+              {session.user?.role !== 'ADMIN' && (
+                <>
+                  <Link href="/cart" className="nav-link">
+                    <ShoppingCart className="w-6 h-6" />
+                    <span>السلة</span>
+                  </Link>
+                  <Link href="/orders" className="nav-link-active">
+                    <Package className="w-6 h-6" />
+                    <span>طلباتي</span>
+                  </Link>
+                </>
+              )}
               {session.user?.role === 'ADMIN' && (
-                <Link href="/admin" className="nav-link">
+                <Link href="/admin" className="nav-link-active">
                   <Settings className="w-6 h-6" />
                   <span>لوحة التحكم</span>
                 </Link>
@@ -203,16 +211,20 @@ export default function Orders() {
                 </div>
                 <span>{session.user?.name}</span>
               </Link>
-              <Link href="/cart" className="nav-link">
-                <ShoppingCart className="w-6 h-6" />
-                <span>السلة</span>
-              </Link>
-              <Link href="/orders" className="nav-link-active">
-                <Package className="w-6 h-6" />
-                <span>طلباتي</span>
-              </Link>
+              {session.user?.role !== 'ADMIN' && (
+                <>
+                  <Link href="/cart" className="nav-link">
+                    <ShoppingCart className="w-6 h-6" />
+                    <span>السلة</span>
+                  </Link>
+                  <Link href="/orders" className="nav-link-active">
+                    <Package className="w-6 h-6" />
+                    <span>طلباتي</span>
+                  </Link>
+                </>
+              )}
               {session.user?.role === 'ADMIN' && (
-                <Link href="/admin" className="nav-link">
+                <Link href="/admin" className="nav-link-active">
                   <Settings className="w-6 h-6" />
                   <span>لوحة التحكم</span>
                 </Link>
