@@ -13,6 +13,8 @@ export const config = {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
+      console.log('📦 Fetching products from database...')
+      
       const products = await prisma.product.findMany({
         where: {
           isActive: true
@@ -22,10 +24,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       })
 
+      console.log(`✅ Found ${products.length} products`)
       res.status(200).json(products)
     } catch (error) {
-      console.error('Error fetching products:', error)
-      res.status(500).json({ message: 'حدث خطأ في الخادم' })
+      console.error('❌ Error fetching products:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      const errorStack = error instanceof Error ? error.stack : undefined
+      console.error('Error details:', { errorMessage, errorStack })
+      res.status(500).json({ 
+        message: 'حدث خطأ في الخادم',
+        error: process.env.NODE_ENV === 'development' ? errorMessage : undefined
+      })
     }
   } else if (req.method === 'POST') {
     try {

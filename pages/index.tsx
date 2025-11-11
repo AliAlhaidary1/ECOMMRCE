@@ -38,6 +38,16 @@ export default function Home() {
   const [cart, setCart] = useState<{productId: string, quantity: number, price: number}[]>([])
   const [orders, setOrders] = useState<any[]>([])
 
+  // إذا كان admin مسجل دخول، أرسله للوحة التحكم
+  useEffect(() => {
+    if (status === 'loading') return
+    
+    if (session?.user?.role === 'ADMIN') {
+      router.push('/admin')
+      return
+    }
+  }, [session, status, router])
+
   useEffect(() => {
     fetchProducts()
     // تحميل السلة من localStorage

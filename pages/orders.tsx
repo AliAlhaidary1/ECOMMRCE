@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/router'
+import ProtectedRoute from '../components/ProtectedRoute'
 import Link from 'next/link'
 import { 
   ShoppingBag, 
@@ -72,26 +73,16 @@ const statusConfig = {
   }
 }
 
-export default function Orders() {
-  const { data: session, status } = useSession()
-  const router = useRouter()
+function OrdersContent() {
+  const { data: session } = useSession()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState('')
 
   useEffect(() => {
-    if (status === 'loading') return
-    if (!session) {
-      router.push('/auth/signin')
-      return
-    }
-    if (session.user?.role === 'ADMIN') {
-      router.push('/admin')
-      return
-    }
     fetchOrders()
-  }, [session, status])
+  }, [])
 
   const fetchOrders = async () => {
     try {
@@ -382,5 +373,13 @@ export default function Orders() {
         )}
       </main>
     </div>
+  )
+}
+
+export default function Orders() {
+  return (
+    <ProtectedRoute allowedRoles={['USER']}>
+      <OrdersContent />
+    </ProtectedRoute>
   )
 }

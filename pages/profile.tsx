@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
+import ProtectedRoute from '../components/ProtectedRoute'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
@@ -40,9 +41,8 @@ interface Order {
   }[]
 }
 
-export default function Profile() {
-  const { data: session, status } = useSession()
-  const router = useRouter()
+function ProfileContent() {
+  const { data: session } = useSession()
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
   const [userOrders, setUserOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
@@ -50,15 +50,8 @@ export default function Profile() {
   const { register, handleSubmit, formState: { errors }, reset } = useForm<UserProfile>()
 
   useEffect(() => {
-    if (status === 'loading') return
-    
-    if (!session) {
-      router.push('/auth/signin')
-      return
-    }
-    
     fetchUserData()
-  }, [session, status, router])
+  }, [])
 
   const fetchUserData = async () => {
     try {
@@ -319,6 +312,14 @@ export default function Profile() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function Profile() {
+  return (
+    <ProtectedRoute allowedRoles={['USER']}>
+      <ProfileContent />
+    </ProtectedRoute>
   )
 }
 

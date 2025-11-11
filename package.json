@@ -8,11 +8,12 @@
     "start": "next start",
     "lint": "next lint",
     "db:push": "prisma db push",
-    "db:migrate": "prisma migrate dev",
-    "db:migrate:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
     "db:generate": "prisma generate",
     "db:seed": "tsx prisma/seed.ts",
+    "db:setup": "tsx scripts/setup-db.ts",
+    "db:test-connection": "tsx scripts/test-db-connection.ts",
+    "db:fix-password": "tsx scripts/fix-db-password.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {

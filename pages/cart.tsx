@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/router'
+import ProtectedRoute from '../components/ProtectedRoute'
 import Link from 'next/link'
 import { 
   ShoppingBag, 
@@ -31,21 +32,15 @@ interface CartItem {
   }
 }
 
-export default function Cart() {
-  const { data: session, status } = useSession()
-  const router = useRouter()
+function CartContent() {
+  const { data: session } = useSession()
   const [cart, setCart] = useState<CartItem[]>([])
   const [loading, setLoading] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   useEffect(() => {
-    if (status === 'loading') return
-    if (!session) {
-      router.push('/auth/signin')
-      return
-    }
     loadCart()
-  }, [session, status])
+  }, [])
 
   const loadCart = async () => {
     try {
@@ -437,5 +432,13 @@ export default function Cart() {
         )}
       </main>
     </div>
+  )
+}
+
+export default function Cart() {
+  return (
+    <ProtectedRoute allowedRoles={['USER']}>
+      <CartContent />
+    </ProtectedRoute>
   )
 }

@@ -11,8 +11,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   if (req.method === 'GET') {
-    try {
-      const orders = await prisma.order.findMany({
+  try {
+    console.log(`📦 Fetching orders for user: ${session.user.id}`)
+    
+    const orders = await prisma.order.findMany({
         where: { userId: session.user.id },
         include: {
           orderItems: {

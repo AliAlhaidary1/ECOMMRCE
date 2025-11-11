@@ -30,8 +30,18 @@ export default function SignIn() {
         toast.error('خطأ في البريد الإلكتروني أو كلمة المرور')
       } else {
         toast.success('تم تسجيل الدخول بنجاح!')
-        // إعادة تحميل الصفحة لضمان تحديث الـ session
-        window.location.href = '/'
+        
+        // الحصول على الـ session لتحديد الدور
+        const session = await getSession()
+        
+        // توجيه المستخدم حسب دوره
+        if (session?.user?.role === 'ADMIN') {
+          // إذا كان admin، أرسله للوحة التحكم
+          window.location.href = '/admin'
+        } else {
+          // إذا كان مستخدم عادي، أرسله للصفحة الرئيسية
+          window.location.href = '/'
+        }
       }
     } catch (error) {
       toast.error('حدث خطأ أثناء تسجيل الدخول')

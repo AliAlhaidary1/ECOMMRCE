@@ -5,6 +5,22 @@ const prisma = new PrismaClient()
 
 async function main() {
   console.log('🌱 بدء إضافة البيانات التجريبية...')
+  console.log('='.repeat(60))
+
+  try {
+    // اختبار الاتصال أولاً
+    console.log('\n🔌 اختبار الاتصال بقاعدة البيانات...')
+    await prisma.$connect()
+    console.log('✅ الاتصال ناجح!\n')
+  } catch (error: any) {
+    console.error('❌ فشل الاتصال بقاعدة البيانات!')
+    console.error('   الرسالة:', error.message)
+    console.error('\n💡 تأكد من:')
+    console.error('   1. ملف .env موجود ويحتوي على DATABASE_URL')
+    console.error('   2. DATABASE_URL صحيح (للـ MongoDB Atlas تأكد من اسم المستخدم وكلمة المرور)')
+    console.error('   3. قاعدة البيانات متاحة والاتصال بالإنترنت يعمل')
+    throw error
+  }
 
   // إنشاء المستخدمين
   console.log('👤 إنشاء المستخدمين...')
@@ -178,6 +194,9 @@ async function main() {
     }
   ]
 
+  // حذف المنتجات الموجودة أولاً لتجنب التكرار
+  await prisma.product.deleteMany({})
+  
   for (const productData of products) {
     await prisma.product.create({
       data: productData
@@ -277,6 +296,7 @@ async function main() {
 
   console.log('✅ تم إنشاء الطلبات بنجاح')
 
+  console.log('\n' + '='.repeat(60))
   console.log('🎉 تم الانتهاء من إضافة جميع البيانات التجريبية!')
   console.log('\n📊 ملخص البيانات المُضافة:')
   console.log(`👥 المستخدمون: ${await prisma.user.count()}`)
@@ -285,16 +305,33 @@ async function main() {
   console.log(`📋 عناصر الطلبات: ${await prisma.orderItem.count()}`)
   
   console.log('\n🔑 بيانات تسجيل الدخول:')
-  console.log('مدير: admin@store.com / 123456')
-  console.log('مستخدم: ahmed@example.com / 123456')
-  console.log('مستخدم: fatima@example.com / 123456')
-}
+  console.log('   👨‍💼 مدير: admin@store.com / 123456')
+  console.log('   👤 مستخدم: ahmed@example.com / 123456')
+  console.log('   👤 مستخدم: fatima@example.com / 123456')
+  console.log('\n' + '='.repeat(60))
+  }
 
 main()
   .catch((e) => {
-    console.error('❌ خطأ في إضافة البيانات:', e)
+    console.error('\n' + '='.repeat(60))
+    console.error('❌ خطأ في إضافة البيانات:')
+    if (e.message?.includes('AuthenticationFailed') || e.message?.includes('bad auth')) {
+      console.error('\n🔐 مشكلة في المصادقة مع MongoDB:')
+      console.error('   - تحقق من اسم المستخدم وكلمة المرور في DATABASE_URL')
+      console.error('   - تأكد من أن المستخدم لديه صلاحيات القراءة والكتابة')
+      console.error('   - للـ MongoDB Atlas: تأكد من أن IP مسموح به في Network Access')
+    } else if (e.message?.includes('DATABASE_URL')) {
+      console.error('\n🔗 مشكلة في رابط الاتصال:')
+      console.error('   - تأكد من وجود DATABASE_URL في ملف .env')
+      console.error('   - تأكد من صحة تنسيق رابط MongoDB')
+    } else {
+      console.error('   الرسالة:', e.message)
+      console.error('   الكود:', e.code)
+    }
+    console.error('\n' + '='.repeat(60))
     process.exit(1)
   })
   .finally(async () => {
     await prisma.$disconnect()
+    console.log('\n🔌 تم إغلاق الاتصال بقاعدة البيانات')
   })

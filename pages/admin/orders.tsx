@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/router'
+import ProtectedRoute from '../../components/ProtectedRoute'
 import Link from 'next/link'
 import { 
   Package, 
@@ -32,23 +33,15 @@ interface Order {
   }[]
 }
 
-export default function AdminOrders() {
-  const { data: session, status } = useSession()
-  const router = useRouter()
+function AdminOrdersContent() {
+  const { data: session } = useSession()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   useEffect(() => {
-    if (status === 'loading') return
-    
-    if (!session || session.user?.role !== 'ADMIN') {
-      router.push('/')
-      return
-    }
-    
     fetchOrders()
-  }, [session, status, router])
+  }, [])
 
   const fetchOrders = async () => {
     try {
@@ -141,10 +134,7 @@ export default function AdminOrders() {
                 <Package className="w-6 h-6" />
                 <span>المنتجات</span>
               </Link>
-              <Link href="/" className="nav-link">
-                <ShoppingBag className="w-6 h-6" />
-                <span>العودة للمتجر</span>
-              </Link>
+     
               <button
                 onClick={handleSignOut}
                 className="nav-link text-danger-600 hover:text-danger-700"
@@ -182,10 +172,7 @@ export default function AdminOrders() {
                 <Package className="w-6 h-6" />
                 <span>المنتجات</span>
               </Link>
-              <Link href="/" className="nav-link">
-                <ShoppingBag className="w-6 h-6" />
-                <span>العودة للمتجر</span>
-              </Link>
+        
               <button
                 onClick={handleSignOut}
                 className="nav-link text-danger-600 hover:text-danger-700"
@@ -321,5 +308,13 @@ export default function AdminOrders() {
         </div>
       </main>
     </div>
+  )
+}
+
+export default function AdminOrders() {
+  return (
+    <ProtectedRoute allowedRoles={['ADMIN']}>
+      <AdminOrdersContent />
+    </ProtectedRoute>
   )
 }

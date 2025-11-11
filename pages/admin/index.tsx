@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/router'
+import ProtectedRoute from '../../components/ProtectedRoute'
 import Link from 'next/link'
 import { 
   Package, 
@@ -47,24 +48,16 @@ interface Order {
   }[]
 }
 
-export default function AdminDashboard() {
-  const { data: session, status } = useSession()
-  const router = useRouter()
+function AdminDashboardContent() {
+  const { data: session } = useSession()
   const [products, setProducts] = useState<Product[]>([])
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   useEffect(() => {
-    if (status === 'loading') return
-    
-    if (!session || session.user?.role !== 'ADMIN') {
-      router.push('/')
-      return
-    }
-    
     fetchData()
-  }, [session, status, router])
+  }, [])
 
   const fetchData = async () => {
     try {
@@ -141,10 +134,7 @@ export default function AdminDashboard() {
                 <ShoppingCart className="w-6 h-6" />
                 <span>الطلبات</span>
               </Link>
-              <Link href="/" className="nav-link">
-                <ShoppingBag className="w-6 h-6" />
-                <span>العودة للمتجر</span>
-              </Link>
+      
               <button
                 onClick={handleSignOut}
                 className="nav-link text-danger-600 hover:text-danger-700"
@@ -182,10 +172,7 @@ export default function AdminDashboard() {
                 <ShoppingCart className="w-6 h-6" />
                 <span>الطلبات</span>
               </Link>
-              <Link href="/" className="nav-link">
-                <ShoppingBag className="w-6 h-6" />
-                <span>العودة للمتجر</span>
-              </Link>
+
               <button
                 onClick={handleSignOut}
                 className="nav-link text-danger-600 hover:text-danger-700"
@@ -293,6 +280,14 @@ export default function AdminDashboard() {
         </div>
       </main>
     </div>
+  )
+}
+
+export default function AdminDashboard() {
+  return (
+    <ProtectedRoute allowedRoles={['ADMIN']}>
+      <AdminDashboardContent />
+    </ProtectedRoute>
   )
 }
 

@@ -128,10 +128,7 @@ export default function AddProduct() {
                 <Package className="w-6 h-6" />
                 <span>الطلبات</span>
               </Link>
-              <Link href="/" className="nav-link">
-                <ShoppingBag className="w-6 h-6" />
-                <span>العودة للمتجر</span>
-              </Link>
+    
               <button
                 onClick={handleSignOut}
                 className="nav-link text-danger-600 hover:text-danger-700"
@@ -173,10 +170,7 @@ export default function AddProduct() {
                 <Package className="w-6 h-6" />
                 <span>الطلبات</span>
               </Link>
-              <Link href="/" className="nav-link">
-                <ShoppingBag className="w-6 h-6" />
-                <span>العودة للمتجر</span>
-              </Link>
+      
               <button
                 onClick={handleSignOut}
                 className="nav-link text-danger-600 hover:text-danger-700"
