@@ -35,6 +35,7 @@ interface Order {
 
 function AdminOrdersContent() {
   const { data: session } = useSession()
+  const router = useRouter()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)

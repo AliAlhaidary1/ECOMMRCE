@@ -34,6 +34,7 @@ interface CartItem {
 
 function CartContent() {
   const { data: session } = useSession()
+  const router = useRouter()
   const [cart, setCart] = useState<CartItem[]>([])
   const [loading, setLoading] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
